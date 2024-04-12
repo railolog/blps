@@ -148,6 +148,16 @@ paths:
         200:
           description: OK
 
+  /tenders/accept-completion/{id}:
+    post:
+      operationId: acceptCompletion
+      tags: [ tender ]
+      parameters:
+        - $ref: 'parameters.yaml#/components/parameters/idPathParam'
+      responses:
+        200:
+          description: OK
+
   /offers/decline/{id}:
     post:
       operationId: declineOffer
@@ -234,3 +244,21 @@ paths:
             application/json:
               schema:
                 $ref: 'schemas.yaml#/components/schemas/OfferListResponseTo'
+
+  /complaints/create:
+    post:
+      operationId: createComplaint
+      tags: [ complaint ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'schemas.yaml#/components/schemas/ComplaintRequestTo'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas.yaml#/components/schemas/ComplaintCreateResponseTo'

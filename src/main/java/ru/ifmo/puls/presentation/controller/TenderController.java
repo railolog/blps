@@ -58,10 +58,19 @@ public class TenderController implements TenderApi {
     }
 
     @Override
+    @Secured("SUPPLIER")
     public ResponseEntity<Void> finishTender(Long tenderId) {
         User user = userService.getCurrentUser();
         tenderQueryService.markFinished(user.getId(), tenderId);
-        return null;
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @Secured("USER")
+    public ResponseEntity<Void> acceptCompletion(Long tenderId) {
+        User user = userService.getCurrentUser();
+        tenderQueryService.acceptCompletion(user.getId(), tenderId);
+        return ResponseEntity.ok().build();
     }
 
     private TenderListResponseTo transform(ListWithTotal<Tender> tenders) {

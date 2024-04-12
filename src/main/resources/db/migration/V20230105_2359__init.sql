@@ -26,3 +26,11 @@ create table offer
     supplier_id bigint references users  not null,
     tender_id   bigint references tender not null
 );
+
+create table complaint
+(
+    id        bigserial primary key,
+    type      text                     not null,
+    message   text                     not null,
+    tender_id bigint references tender not null
+);

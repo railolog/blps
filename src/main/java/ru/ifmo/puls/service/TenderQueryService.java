@@ -52,6 +52,21 @@ public class TenderQueryService {
         tenderRepository.save(tender);
     }
 
+    public void acceptCompletion(long userId, long tenderId) {
+        Tender tender = tenderRepository.findById(tenderId).orElseThrow(() -> NotFoundException.fromTender(tenderId));
+
+        if (tender.getStatus() != TenderStatus.FINISHED) {
+            throw ConflictException.incorrectTenderStatus(TenderStatus.FINISHED);
+        }
+
+        if (!Objects.equals(tender.getUserId(), userId)) {
+            throw ForbiddenException.fromUserId(userId);
+        }
+
+        tender.setStatus(TenderStatus.ACCEPTED);
+        tenderRepository.save(tender);
+    }
+
     public boolean isUsersTender(long userId, long tenderId) {
         return tenderRepository.existsByIdAndUserId(tenderId, userId);
     }

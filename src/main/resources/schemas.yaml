@@ -100,7 +100,7 @@ components:
           type: integer
           format: int64
           minimum: 1
-          required: truet
+          required: true
 
     CreateOfferResponseTo:
       type: object
@@ -108,6 +108,25 @@ components:
         id:
           type: integer
           format: int64
+
+    ComplaintRequestTo:
+      type: object
+      properties:
+        tenderId:
+          type: integer
+          format: int64
+          required: true
+        message:
+          type: string
+          required: true
+
+    ComplaintCreateResponseTo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          required: true
 
     SignUpRequestTo:
       type: object

@@ -310,3 +310,17 @@ paths:
             application/json:
               schema:
                 $ref: 'schemas.yaml#/components/schemas/ComplaintResponseTo'
+
+  /complaints/resolve:
+    post:
+      operationId: resolveComplaint
+      tags: [ complaint ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'schemas.yaml#/components/schemas/ResolutionRequestTo'
+      responses:
+        200:
+          description: OK

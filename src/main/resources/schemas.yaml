@@ -148,6 +148,17 @@ components:
           type: integer
           format: int64
 
+    ResolutionRequestTo:
+      type: object
+      properties:
+        complaintId:
+          type: integer
+          format: int64
+        resolution:
+          type: string
+          enum: [ accepted, denied ]
+          default: accepted
+
     SignUpRequestTo:
       type: object
       required: [ username, password ]

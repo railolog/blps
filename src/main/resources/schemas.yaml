@@ -1,0 +1,146 @@
+components:
+  schemas:
+    idType:
+      type: integer
+      format: int64
+      nullable: false
+
+    CreateTenderRequestTo:
+      type: object
+      properties:
+        title:
+          type: string
+          required: true
+        description:
+          type: string
+        amount:
+          type: integer
+          format: int64
+          minimum: 1
+
+    CreateTenderResponseTo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+
+    TenderListResponseTo:
+      type: object
+      properties:
+        tenders:
+          type: array
+          items:
+            - $ref: "#/components/schemas/TenderResponseTo"
+        total:
+          type: integer
+          format: int64
+
+    TenderResponseTo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        amount:
+          type: integer
+          format: int64
+        status:
+          type: string
+        username:
+          type: string
+
+    OfferListResponseTo:
+      type: object
+      properties:
+        offers:
+          type: array
+          items:
+            - $ref: "#/components/schemas/OfferResponseTo"
+
+    OfferResponseTo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+          required: true
+        price:
+          type: integer
+          format: int64
+          minimum: 1
+        status:
+          type: string
+        supplierId:
+          type: integer
+          format: int64
+        tenderId:
+          type: integer
+          format: int64
+          minimum: 1
+
+    CreateOfferRequestTo:
+      type: object
+      properties:
+        description:
+          type: string
+          required: true
+        price:
+          type: integer
+          format: int64
+          minimum: 1
+          required: true
+        tenderId:
+          type: integer
+          format: int64
+          minimum: 1
+          required: truet
+
+    CreateOfferResponseTo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+
+    SignUpRequestTo:
+      type: object
+      required: [ username, password ]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        isSupplier:
+          type: boolean
+          default: false
+
+    SignInRequestTo:
+      type: object
+      required: [ username, password ]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    JwtResponseTo:
+      type: object
+      required: [ token ]
+      properties:
+        token:
+          type: string
+
+    ErrorResponseTo:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string

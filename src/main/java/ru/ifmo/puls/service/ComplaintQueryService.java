@@ -2,6 +2,7 @@ package ru.ifmo.puls.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.domain.ComplaintConv;
 import ru.ifmo.puls.domain.ConvType;
 import ru.ifmo.puls.domain.Tender;
@@ -17,6 +18,7 @@ public class ComplaintQueryService {
     private final ComplaintRepository complaintRepository;
     private final TenderQueryService tenderQueryService;
 
+    @Transactional
     public ComplaintConv create(long userId, long tenderId, String message) {
         Tender tender = tenderQueryService.findById(tenderId).orElseThrow(() -> NotFoundException.fromTender(tenderId));
 
@@ -34,6 +36,13 @@ public class ComplaintQueryService {
                 .tenderId(tenderId)
                 .build();
 
+        tender.setStatus(TenderStatus.IN_DISPUTE);
+        tenderQueryService.save(tender);
+
         return complaintRepository.save(complaint);
+    }
+
+    public ComplaintConv getById(long id) {
+        return complaintRepository.findById(id).orElseThrow(() -> NotFoundException.fromComplaint(id));
     }
 }

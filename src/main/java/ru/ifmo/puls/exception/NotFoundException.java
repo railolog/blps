@@ -10,4 +10,8 @@ public class NotFoundException extends ApiException{
     public static NotFoundException fromTender(long id) {
         return new NotFoundException("There are no tender with id [" + id + "]");
     }
+
+    public static NotFoundException fromComplaint(long id) {
+        return new NotFoundException("There are no complaint_conv with id [" + id + "]");
+    }
 }

@@ -81,6 +81,10 @@ public class TenderQueryService {
         return tenderRepository.findById(id);
     }
 
+    public Tender getById(long id) {
+        return tenderRepository.findById(id).orElseThrow(() -> NotFoundException.fromTender(id));
+    }
+
     public ListWithTotal<Tender> findAllNew(int limit, int offset) {
         Page<Tender> tenders = tenderRepository
                 .findByStatus(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), TenderStatus.NEW);
@@ -90,6 +94,12 @@ public class TenderQueryService {
     public ListWithTotal<Tender> findByUserId(int limit, int offset, long userId) {
         Page<Tender> tenders = tenderRepository
                 .findByUserId(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), userId);
+        return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
+    }
+
+    public ListWithTotal<Tender> findByStatus(int limit, int offset, TenderStatus status) {
+        Page<Tender> tenders = tenderRepository
+                .findByStatus(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), status);
         return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
     }
 

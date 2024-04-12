@@ -123,6 +123,40 @@ paths:
               schema:
                 $ref: 'schemas.yaml#/components/schemas/TenderListResponseTo'
 
+  /tenders/by-status:
+    get:
+      operationId: getTendersByStatus
+      description: Получение тендеров по статусам (админ)
+      tags:
+        - tender
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            description: The number of items to return at one time (max 100)
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [ in_dispute, accepted, not_accepted ]
+            default: in_dispute
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas.yaml#/components/schemas/TenderListResponseTo'
+
   /tenders/by-id/{id}:
     get:
       operationId: getTenderById
@@ -262,3 +296,17 @@ paths:
             application/json:
               schema:
                 $ref: 'schemas.yaml#/components/schemas/ComplaintCreateResponseTo'
+
+  /complaints/{id}:
+    get:
+      operationId: getComplaintByTenderId
+      tags: [ complaint ]
+      parameters:
+        - $ref: 'parameters.yaml#/components/parameters/idPathParam'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas.yaml#/components/schemas/ComplaintResponseTo'

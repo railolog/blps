@@ -12,7 +12,9 @@ import ru.blps.openapi.model.TenderResponseTo;
 import ru.ifmo.puls.auth.model.User;
 import ru.ifmo.puls.auth.service.UserService;
 import ru.ifmo.puls.domain.Tender;
+import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.dto.ListWithTotal;
+import ru.ifmo.puls.exception.BadRequest;
 import ru.ifmo.puls.service.TenderQueryService;
 
 @RestController
@@ -34,6 +36,13 @@ public class TenderController implements TenderApi {
         return tenderQueryService.findById(id)
                 .map(tender -> ResponseEntity.ok(transform(tender)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Override
+    public ResponseEntity<TenderListResponseTo> getTendersByStatus(Integer limit, Integer offset, String status) {
+        return ResponseEntity.ok(
+                transform(tenderQueryService.findByStatus(limit, offset, castStatus(status)))
+        );
     }
 
     @Override
@@ -91,5 +100,13 @@ public class TenderController implements TenderApi {
                 .description(tender.getDescription())
                 .status(tender.getStatus().toString())
                 .amount(tender.getAmount());
+    }
+
+    private TenderStatus castStatus(String status) {
+        try {
+            return TenderStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequest(e.getMessage());
+        }
     }
 }

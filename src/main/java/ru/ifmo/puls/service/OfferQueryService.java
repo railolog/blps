@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.domain.Offer;
 import ru.ifmo.puls.repository.OfferRepository;
 
@@ -25,10 +26,12 @@ public class OfferQueryService {
         return offerRepository.findBySupplierId(supplierId);
     }
 
+    @Transactional
     public Offer save(Offer offer) {
         return offerRepository.save(offer);
     }
 
+    @Transactional
     public void saveAll(Iterable<Offer> offers) {
         offerRepository.saveAll(offers);
     }

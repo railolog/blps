@@ -30,7 +30,6 @@ create table offer
 create table complaint
 (
     id        bigserial primary key,
-    type      text                     not null,
     message   text                     not null,
     tender_id bigint references tender not null
 );

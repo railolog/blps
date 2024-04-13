@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.domain.ComplaintConv;
-import ru.ifmo.puls.domain.ConvType;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
@@ -31,7 +30,6 @@ public class ComplaintQueryService {
         }
 
         ComplaintConv complaint = ComplaintConv.builder()
-                .type(ConvType.COMPLAINT)
                 .message(message)
                 .tenderId(tenderId)
                 .build();

@@ -24,8 +24,6 @@ public class ComplaintConv {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(value = EnumType.STRING)
-    private ConvType type;
     private String message;
     private Long tenderId;
 }

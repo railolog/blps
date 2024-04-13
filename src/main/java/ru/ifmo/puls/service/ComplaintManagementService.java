@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.ComplaintResponseTo;
 import ru.blps.openapi.model.ResolutionRequestTo;
 import ru.ifmo.puls.domain.ComplaintConv;
@@ -25,6 +26,7 @@ public class ComplaintManagementService {
         return enriched(complaintConv, tender);
     }
 
+    @Transactional
     public void resolve(ResolutionRequestTo request) {
         ComplaintConv complaint = complaintQueryService.getById(request.getComplaintId());
         Tender tender = tenderQueryService.getById(complaint.getId());
@@ -41,7 +43,6 @@ public class ComplaintManagementService {
     private ComplaintResponseTo enriched(ComplaintConv conv, Tender tender) {
         return new ComplaintResponseTo()
                 .id(conv.getId())
-                .type(conv.getType().toString())
                 .message(conv.getMessage())
                 .tenderId(tender.getId())
                 .userId(tender.getUserId())

@@ -134,8 +134,6 @@ components:
         id:
           type: integer
           format: int64
-        type:
-          type: string
         message:
           type: string
         tenderId:

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.ifmo.puls.LimitOffsetPageRequest;
 import ru.ifmo.puls.auth.model.User;
@@ -24,6 +25,7 @@ import ru.ifmo.puls.repository.TenderRepository;
 public class TenderQueryService {
     private final TenderRepository tenderRepository;
 
+    @Transactional
     public long createTender(CreateTenderRequestTo request, User user) {
         Tender tender = Tender.builder()
                 .title(request.getTitle())
@@ -37,6 +39,7 @@ public class TenderQueryService {
         return savedTender.getId();
     }
 
+    @Transactional
     public void markFinished(long supplierId, long tenderId) {
         Tender tender = tenderRepository.findById(tenderId).orElseThrow(() -> NotFoundException.fromTender(tenderId));
 
@@ -52,6 +55,7 @@ public class TenderQueryService {
         tenderRepository.save(tender);
     }
 
+    @Transactional
     public void acceptCompletion(long userId, long tenderId) {
         Tender tender = tenderRepository.findById(tenderId).orElseThrow(() -> NotFoundException.fromTender(tenderId));
 
@@ -103,6 +107,7 @@ public class TenderQueryService {
         return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
     }
 
+    @Transactional
     public Tender save(Tender tender) {
         return tenderRepository.save(tender);
     }

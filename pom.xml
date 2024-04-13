@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.ifmo</groupId>
     <artifactId>blps</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>blps</name>
     <description>blps</description>
     <properties>

@@ -20,8 +20,10 @@ import ru.ifmo.puls.exception.NotFoundException;
 @RequiredArgsConstructor
 public class OfferManagementService {
     private final OfferQueryService offerQueryService;
+
     private final TenderQueryService tenderQueryService;
 
+    @Transactional
     public long createOffer(CreateOfferRequestTo request, User supplier) {
         Tender tender = tenderQueryService
                 .findById(request.getTenderId())
@@ -113,7 +115,7 @@ public class OfferManagementService {
         tenderQueryService.save(tender);
     }
 
-    public void acceptOneDeclineAll(Offer offer, long offerIdToAccept) {
+    private void acceptOneDeclineAll(Offer offer, long offerIdToAccept) {
         if (offer.getId().equals(offerIdToAccept)) {
             offer.setStatus(OfferStatus.ACCEPTED);
         } else {

@@ -155,7 +155,7 @@ paths:
               schema:
                 $ref: 'schemas.yaml#/components/schemas/TenderListResponseTo'
 
-  /tenders/by-id/{id}:
+  /tenders/{id}:
     get:
       operationId: getTenderById
       tags: [ tender ]
@@ -285,7 +285,7 @@ paths:
               schema:
                 $ref: 'schemas.yaml#/components/schemas/OfferListResponseTo'
 
-  /offers/by-id/{id}:
+  /offers/{id}:
     get:
       operationId: getOfferById
       tags: [ offer ]

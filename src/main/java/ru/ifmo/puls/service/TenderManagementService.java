@@ -29,7 +29,7 @@ public class TenderManagementService {
         List<Offer> offers = offerQueryService.findByTenderId(tenderId);
 
         if (tender.getStatus() != TenderStatus.NEW) {
-            throw ConflictException.incorrectTenderStatus(tender.getStatus());
+            throw ConflictException.incorrectTenderStatus(TenderStatus.NEW);
         }
         if (offers.stream().anyMatch(offer -> offer.getStatus() == OfferStatus.ACCEPTED)) {
             throw new ConflictException("There are accepted offers");
@@ -47,10 +47,7 @@ public class TenderManagementService {
         List<Offer> offers = offerQueryService.findByTenderId(tenderId);
 
         if (tender.getStatus() != TenderStatus.NEW) {
-            throw ConflictException.incorrectTenderStatus(tender.getStatus());
-        }
-        if (offers.stream().anyMatch(offer -> offer.getStatus() == OfferStatus.ACCEPTED)) {
-            throw new ConflictException("There are accepted offers");
+            throw ConflictException.incorrectTenderStatus(TenderStatus.NEW);
         }
 
         tender.setTitle(request.getTitle());

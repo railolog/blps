@@ -13,4 +13,7 @@ public interface TenderRepository extends JpaRepository<Tender, Long>, PagingAnd
     Page<Tender> findByUserId(Pageable pageable, Long userId);
 
     boolean existsByIdAndUserId(Long id, Long userId);
+
+    long countByStatusAndUserId(TenderStatus status, long userId);
+    long countByStatusAndSupplierId(TenderStatus status, long supplier);
 }

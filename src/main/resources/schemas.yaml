@@ -157,6 +157,16 @@ components:
           enum: [ accepted, denied ]
           default: accepted
 
+    UserStatsResponseTo:
+      type: object
+      properties:
+        acceptedTenders:
+          type: integer
+          format: int64
+        declinedTenders:
+          type: integer
+          format: int64
+
     SignUpRequestTo:
       type: object
       required: [ username, password ]

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.ifmo.puls.auth.model.Role;
 import ru.ifmo.puls.auth.model.User;
 import ru.ifmo.puls.auth.repo.UserRepository;
+import ru.ifmo.puls.exception.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +52,11 @@ public class UserService {
         return repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
+    }
+
+    public User getById(long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("There is no user with id [" + id + "]"));
     }
 
     public UserDetailsService userDetailsService() {

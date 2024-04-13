@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ifmo.puls.LimitOffsetPageRequest;
 import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.dto.ListWithTotal;
 import ru.ifmo.puls.repository.OfferRepository;
 
 @Service
@@ -22,8 +26,10 @@ public class OfferQueryService {
         return offerRepository.findByTenderId(tenderId);
     }
 
-    public List<Offer> findBySupplierId(long supplierId) {
-        return offerRepository.findBySupplierId(supplierId);
+    public ListWithTotal<Offer> findBySupplierId(int limit, int offset, long supplierId) {
+        Page<Offer> offers = offerRepository
+                .findBySupplierId(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), supplierId);
+        return new ListWithTotal<>(offers.stream().toList(), offers.getTotalElements());
     }
 
     @Transactional

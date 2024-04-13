@@ -31,7 +31,7 @@ components:
         tenders:
           type: array
           items:
-            - $ref: "#/components/schemas/TenderResponseTo"
+            $ref: "#/components/schemas/TenderShortResponseTo"
         total:
           type: integer
           format: int64
@@ -54,13 +54,32 @@ components:
         username:
           type: string
 
+    TenderShortResponseTo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        amount:
+          type: integer
+          format: int64
+        status:
+          type: string
+        username:
+          type: string
+
     OfferListResponseTo:
       type: object
       properties:
         offers:
           type: array
           items:
-            - $ref: "#/components/schemas/OfferResponseTo"
+            $ref: "#/components/schemas/OfferShortResponseTo"
+        total:
+          type: integer
+          format: int64
 
     OfferResponseTo:
       type: object
@@ -71,6 +90,26 @@ components:
         description:
           type: string
           required: true
+        price:
+          type: integer
+          format: int64
+          minimum: 1
+        status:
+          type: string
+        supplierId:
+          type: integer
+          format: int64
+        tenderId:
+          type: integer
+          format: int64
+          minimum: 1
+
+    OfferShortResponseTo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
         price:
           type: integer
           format: int64

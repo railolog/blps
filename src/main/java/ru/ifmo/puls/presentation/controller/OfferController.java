@@ -12,8 +12,11 @@ import ru.blps.openapi.model.CreateOfferRequestTo;
 import ru.blps.openapi.model.CreateOfferResponseTo;
 import ru.blps.openapi.model.OfferListResponseTo;
 import ru.blps.openapi.model.OfferResponseTo;
+import ru.blps.openapi.model.OfferShortResponseTo;
+import ru.ifmo.puls.auth.model.User;
 import ru.ifmo.puls.auth.service.UserService;
 import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.dto.ListWithTotal;
 import ru.ifmo.puls.service.OfferManagementService;
 import ru.ifmo.puls.service.OfferQueryService;
 
@@ -50,22 +53,20 @@ public class OfferController implements OfferApi {
     }
 
     @Override
-    @Secured("SUPPLIER")
-    public ResponseEntity<OfferListResponseTo> getSupplierOffers() {
-        return ResponseEntity.ok(
-                transform(
-                        offerQueryService.findBySupplierId(userService.getCurrentUser().getId())
-                )
-        );
+    public ResponseEntity<Void> deleteOffer(Long id) {
+        User user = userService.getCurrentUser();
+        offerManagementService.deleteOffer(user.getId(), id);
+        return ResponseEntity.ok().build();
     }
 
-    private OfferListResponseTo transform(List<Offer> offers) {
-        return new OfferListResponseTo()
-                .offers(
-                        offers.stream()
-                                .map(this::transform)
-                                .toList()
-                );
+    @Override
+    @Secured("SUPPLIER")
+    public ResponseEntity<OfferListResponseTo> getSupplierOffers(Integer limit, Integer offset) {
+        return ResponseEntity.ok(
+                transform(
+                        offerQueryService.findBySupplierId(limit, offset, userService.getCurrentUser().getId())
+                )
+        );
     }
 
     @Override
@@ -80,10 +81,38 @@ public class OfferController implements OfferApi {
         return ResponseEntity.ok().build();
     }
 
+    private OfferListResponseTo transform(ListWithTotal<Offer> offers) {
+        return new OfferListResponseTo()
+                .offers(
+                        offers.items().stream()
+                                .map(this::transformShort)
+                                .toList()
+                )
+                .total(offers.total());
+    }
+
+    private OfferListResponseTo transform(List<Offer> offers) {
+        return new OfferListResponseTo()
+                .offers(
+                        offers.stream()
+                                .map(this::transformShort)
+                                .toList()
+                );
+    }
+
     private OfferResponseTo transform(Offer offer) {
         return new OfferResponseTo()
                 .id(offer.getId())
                 .description(offer.getDescription())
+                .price(offer.getPrice())
+                .status(offer.getStatus().toString())
+                .supplierId(offer.getSupplierId())
+                .tenderId(offer.getTenderId());
+    }
+
+    private OfferShortResponseTo transformShort(Offer offer) {
+        return new OfferShortResponseTo()
+                .id(offer.getId())
                 .price(offer.getPrice())
                 .status(offer.getStatus().toString())
                 .supplierId(offer.getSupplierId())

@@ -15,12 +15,13 @@ import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.exception.ForbiddenException;
 import ru.ifmo.puls.exception.NotFoundException;
+import ru.ifmo.puls.repository.OfferRepository;
 
 @Service
 @RequiredArgsConstructor
 public class OfferManagementService {
     private final OfferQueryService offerQueryService;
-
+    private final OfferRepository offerRepository;
     private final TenderQueryService tenderQueryService;
 
     @Transactional
@@ -45,6 +46,18 @@ public class OfferManagementService {
 
         Offer savedOffer = offerQueryService.save(offer);
         return savedOffer.getId();
+    }
+
+    @Transactional
+    public void deleteOffer(long userId, long offerId) {
+        Offer offer = offerQueryService.findById(offerId)
+                .orElseThrow(() -> new NotFoundException("No offer with id [" + offerId + "]"));
+
+        if (offer.getStatus() != OfferStatus.NEW) {
+            throw new ConflictException("Offer must be new");
+        }
+
+        offerRepository.delete(offer);
     }
 
     public List<Offer> findByTenderId(long tenderId, User user) {

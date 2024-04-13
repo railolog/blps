@@ -9,18 +9,21 @@ import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.blps.openapi.model.CreateTenderResponseTo;
 import ru.blps.openapi.model.TenderListResponseTo;
 import ru.blps.openapi.model.TenderResponseTo;
+import ru.blps.openapi.model.TenderShortResponseTo;
 import ru.ifmo.puls.auth.model.User;
 import ru.ifmo.puls.auth.service.UserService;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.dto.ListWithTotal;
 import ru.ifmo.puls.exception.BadRequest;
+import ru.ifmo.puls.service.TenderManagementService;
 import ru.ifmo.puls.service.TenderQueryService;
 
 @RestController
 @RequiredArgsConstructor
 public class TenderController implements TenderApi {
     private final TenderQueryService tenderQueryService;
+    private final TenderManagementService tenderManagementService;
     private final UserService userService;
 
     @Override
@@ -82,13 +85,27 @@ public class TenderController implements TenderApi {
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public ResponseEntity<Void> deleteTender(Long id) {
+        User user = userService.getCurrentUser();
+        tenderManagementService.removeTender(user.getId(), id);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> updateTender(Long id, CreateTenderRequestTo createTenderRequestTo) {
+        User user = userService.getCurrentUser();
+        tenderManagementService.updateTender(user.getId(), id, createTenderRequestTo);
+        return ResponseEntity.ok().build();
+    }
+
     private TenderListResponseTo transform(ListWithTotal<Tender> tenders) {
         return new TenderListResponseTo()
                 .total(tenders.total())
                 .tenders(
                         tenders.items()
                                 .stream()
-                                .map(this::transform)
+                                .map(this::transformShort)
                                 .toList()
                 );
     }
@@ -98,6 +115,14 @@ public class TenderController implements TenderApi {
                 .id(tender.getId())
                 .title(tender.getTitle())
                 .description(tender.getDescription())
+                .status(tender.getStatus().toString())
+                .amount(tender.getAmount());
+    }
+
+    private TenderShortResponseTo transformShort(Tender tender) {
+        return new TenderShortResponseTo()
+                .id(tender.getId())
+                .title(tender.getTitle())
                 .status(tender.getStatus().toString())
                 .amount(tender.getAmount());
     }

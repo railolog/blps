@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.ifmo.puls.auth.model.User;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.auth.repo.UserRepository;
 import ru.ifmo.puls.exception.NotFoundException;
 

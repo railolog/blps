@@ -10,7 +10,7 @@ import ru.blps.openapi.model.CreateTenderResponseTo;
 import ru.blps.openapi.model.TenderListResponseTo;
 import ru.blps.openapi.model.TenderResponseTo;
 import ru.blps.openapi.model.TenderShortResponseTo;
-import ru.ifmo.puls.auth.model.User;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.auth.service.UserService;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;

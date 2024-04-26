@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import com.atomikos.spring.AtomikosDataSourceBean;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,43 +12,45 @@ import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @EnableJpaRepositories(
         basePackages = "ru.ifmo.puls.repository.offer",
         entityManagerFactoryRef = "offerEntityManager",
-        transactionManagerRef = "offerTransactionManager"
+        transactionManagerRef = "transactionManager"
 )
 public class OfferJpaConfiguration {
-    @Bean
-    public DataSource offerDataSource(
+    @Bean(initMethod = "init", destroyMethod = "close")
+    public AtomikosDataSourceBean offerDataSource(
             @Value("${pgaas.offer.url}") String jdbcUrl,
             @Value("${pgaas.offer.username}") String username,
             @Value("${pgaas.offer.password}") String password,
-            @Value("${spring.datasource.driver-class-name}") String driverName
+            @Value("${atomikos.datasource.driver-class-name}") String driverName
     ) {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverName);
-        dataSource.setUrl(jdbcUrl);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        AtomikosDataSourceBean dataSource = new AtomikosDataSourceBean();
+        dataSource.setUniqueResourceName("offer-db");
+
+        dataSource.setXaDataSourceClassName(driverName);
+
+        dataSource.getXaProperties().setProperty("serverName", "offer_db");
+        dataSource.getXaProperties().setProperty("portNumber", "5432");
+        dataSource.getXaProperties().setProperty("databaseName", "secondary");
+        dataSource.getXaProperties().setProperty("user", username);
+        dataSource.getXaProperties().setProperty("password", password);
 
         return dataSource;
     }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean offerEntityManager(
-            @Qualifier("offerDataSource") DataSource offerDataSource
+            @Qualifier("offerDataSource") AtomikosDataSourceBean offerDataSource
     ) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(offerDataSource);
-        emf.setPackagesToScan("ru.ifmo.puls.domain.offer");
+        emf.setPackagesToScan("ru.ifmo.puls.offer");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         emf.setJpaVendorAdapter(vendorAdapter);
@@ -63,15 +66,5 @@ public class OfferJpaConfiguration {
         emf.setJpaProperties(additionalProperties);
 
         return emf;
-    }
-
-    @Bean
-    public PlatformTransactionManager offerTransactionManager(
-            @Qualifier("offerEntityManager")
-            LocalContainerEntityManagerFactoryBean offerEntityManager
-    ) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(offerEntityManager.getObject());
-        return transactionManager;
     }
 }

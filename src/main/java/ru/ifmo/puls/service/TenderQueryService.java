@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.ifmo.puls.LimitOffsetPageRequest;
-import ru.ifmo.puls.auth.model.User;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.dto.ListWithTotal;

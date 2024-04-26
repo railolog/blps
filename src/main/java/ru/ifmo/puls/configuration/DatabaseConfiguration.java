@@ -2,10 +2,10 @@ package ru.ifmo.puls.configuration;
 
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
+import com.atomikos.spring.AtomikosDataSourceBean;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.context.annotation.Bean;
@@ -14,14 +14,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
 import ru.ifmo.puls.repository.offer.OfferRepository;
 
 @Slf4j
@@ -35,36 +31,39 @@ import ru.ifmo.puls.repository.offer.OfferRepository;
                 )
         },
         entityManagerFactoryRef = "primaryEntityManager",
-        transactionManagerRef = "primaryTransactionManager"
+        transactionManagerRef = "transactionManager"
 )
 @Import(FlywayConfiguration.class)
 public class DatabaseConfiguration {
-    @Primary
-    @Bean
+    @Bean(initMethod = "init", destroyMethod = "close")
     @DependsOn("flywayDelegate")
-    public DataSource dataSource(
+    public AtomikosDataSourceBean primaryDataSource(
             @Value("${pgaas.datasource.url}") String jdbcUrl,
             @Value("${pgaas.datasource.username}") String username,
             @Value("${pgaas.datasource.password}") String password,
-            @Value("${spring.datasource.driver-class-name}") String driverName
+            @Value("${atomikos.datasource.driver-class-name}") String driverName
     ) {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverName);
-        dataSource.setUrl(jdbcUrl);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        AtomikosDataSourceBean dataSource = new AtomikosDataSourceBean();
+        dataSource.setUniqueResourceName("primary-db");
+
+        dataSource.setXaDataSourceClassName(driverName);
+
+        dataSource.getXaProperties().setProperty("serverName", "db");
+        dataSource.getXaProperties().setProperty("portNumber", "5432");
+        dataSource.getXaProperties().setProperty("databaseName", "main");
+        dataSource.getXaProperties().setProperty("user", username);
+        dataSource.getXaProperties().setProperty("password", password);
 
         return dataSource;
     }
 
     @Bean
-    @Primary
     public LocalContainerEntityManagerFactoryBean primaryEntityManager(
-            DataSource dataSource
+            @Qualifier("primaryDataSource") AtomikosDataSourceBean dataSource
     ) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource);
-        emf.setPackagesToScan("ru.ifmo.puls");
+        emf.setPackagesToScan("ru.ifmo.puls.domain");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         emf.setJpaVendorAdapter(vendorAdapter);
@@ -80,15 +79,5 @@ public class DatabaseConfiguration {
         emf.setJpaProperties(additionalProperties);
 
         return emf;
-    }
-
-    @Bean
-    @Primary
-    public PlatformTransactionManager primaryTransactionManager(
-            LocalContainerEntityManagerFactoryBean primaryEntityManager
-    ) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(primaryEntityManager.getObject());
-        return transactionManager;
     }
 }

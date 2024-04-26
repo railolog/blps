@@ -1,4 +1,4 @@
-package ru.ifmo.puls.auth.model;
+package ru.ifmo.puls.domain;
 
 public enum Role {
     USER,

@@ -9,7 +9,7 @@ import ru.blps.openapi.model.ComplaintCreateResponseTo;
 import ru.blps.openapi.model.ComplaintRequestTo;
 import ru.blps.openapi.model.ComplaintResponseTo;
 import ru.blps.openapi.model.ResolutionRequestTo;
-import ru.ifmo.puls.auth.model.User;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.auth.service.UserService;
 import ru.ifmo.puls.domain.ComplaintConv;
 import ru.ifmo.puls.service.ComplaintManagementService;

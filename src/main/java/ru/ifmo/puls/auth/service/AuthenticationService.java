@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.blps.openapi.model.JwtResponseTo;
 import ru.blps.openapi.model.SignInRequestTo;
 import ru.blps.openapi.model.SignUpRequestTo;
-import ru.ifmo.puls.auth.model.Role;
-import ru.ifmo.puls.auth.model.User;
+import ru.ifmo.puls.domain.Role;
+import ru.ifmo.puls.domain.User;
 
 @Service
 @RequiredArgsConstructor

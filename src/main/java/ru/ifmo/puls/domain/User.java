@@ -1,4 +1,4 @@
-package ru.ifmo.puls.auth.model;
+package ru.ifmo.puls.domain;
 
 import java.util.Collection;
 import java.util.List;

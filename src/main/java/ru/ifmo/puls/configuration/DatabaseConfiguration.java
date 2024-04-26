@@ -29,7 +29,6 @@ public class DatabaseConfiguration {
     @DependsOn("flywayDelegate")
     public DataSource dataSource(
             @Value("${pgaas.datasource.url}") String jdbcUrl,
-            @Value("${pgaas.datasource.name}") String schemaName,
             @Value("${pgaas.datasource.username}") String username,
             @Value("${pgaas.datasource.password}") String password,
             @Value("${spring.datasource.driver-class-name}") String driverName
@@ -39,7 +38,6 @@ public class DatabaseConfiguration {
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
-//        dataSource.setSchema(schemaName);
 
         return dataSource;
     }

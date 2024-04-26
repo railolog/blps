@@ -5,7 +5,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.ifmo.puls.auth.model.Role;
 import ru.ifmo.puls.auth.model.User;
 import ru.ifmo.puls.auth.repo.UserRepository;
 import ru.ifmo.puls.exception.NotFoundException;
@@ -69,8 +68,6 @@ public class UserService {
      * @return текущий пользователь
      */
     public User getCurrentUser() {
-        // Получение имени пользователя из контекста Spring Security
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getByUsername(username);
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

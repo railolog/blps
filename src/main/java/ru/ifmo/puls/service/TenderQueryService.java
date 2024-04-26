@@ -107,6 +107,7 @@ public class TenderQueryService {
         return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
     }
 
+    @Transactional
     public void delete(Tender tender) {
         tenderRepository.delete(tender);
     }

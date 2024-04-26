@@ -51,8 +51,6 @@ components:
           format: int64
         status:
           type: string
-        username:
-          type: string
 
     TenderShortResponseTo:
       type: object
@@ -66,8 +64,6 @@ components:
           type: integer
           format: int64
         status:
-          type: string
-        username:
           type: string
 
     OfferListResponseTo:

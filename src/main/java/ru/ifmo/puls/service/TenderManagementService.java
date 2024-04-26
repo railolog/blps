@@ -4,16 +4,15 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.ifmo.puls.domain.ComplaintConv;
-import ru.ifmo.puls.domain.Offer;
-import ru.ifmo.puls.domain.OfferStatus;
+import ru.ifmo.puls.domain.offer.Offer;
+import ru.ifmo.puls.domain.offer.OfferStatus;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.repository.ComplaintRepository;
-import ru.ifmo.puls.repository.OfferRepository;
+import ru.ifmo.puls.repository.offer.OfferRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +22,6 @@ public class TenderManagementService {
     private final ComplaintRepository complaintRepository;
     private final OfferRepository offerRepository;
 
-    @Transactional
     public void removeTender(long userId, long tenderId) {
         Tender tender = tenderQueryService.getById(tenderId);
         List<Offer> offers = offerQueryService.findByTenderId(tenderId);
@@ -41,10 +39,8 @@ public class TenderManagementService {
         tenderQueryService.delete(tender);
     }
 
-    @Transactional
     public void updateTender(long userId, long tenderId, CreateTenderRequestTo request) {
         Tender tender = tenderQueryService.getById(tenderId);
-        List<Offer> offers = offerQueryService.findByTenderId(tenderId);
 
         if (tender.getStatus() != TenderStatus.NEW) {
             throw ConflictException.incorrectTenderStatus(TenderStatus.NEW);

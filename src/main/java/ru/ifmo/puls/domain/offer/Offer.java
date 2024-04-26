@@ -1,4 +1,4 @@
-package ru.ifmo.puls.domain;
+package ru.ifmo.puls.domain.offer;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

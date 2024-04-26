@@ -9,7 +9,7 @@ services:
       PGAAS_DATASOURCE_USERNAME: user
       PGAAS_DATASOURCE_PASSWORD: pass
 
-      SECONDARY_DB_URL: jdbc:postgresql://db2:5432/main
+      SECONDARY_DB_URL: jdbc:postgresql://offer_db:5432/secondary
       SECONDARY_DB_USER: user
       SECONDARY_DB_PASS: pass
 
@@ -18,7 +18,7 @@ services:
     restart: on-failure
     depends_on:
       - db
-      - db2
+      - offer_db
 
   db:
     image: postgres:16
@@ -32,7 +32,7 @@ services:
     volumes:
       - ./postgres/db1:/var/lib/postgresql/data
 
-  db2:
+  offer_db:
     image: postgres:16
     shm_size: 128mb
     environment:
@@ -42,4 +42,4 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./postgres/db2:/var/lib/postgresql/data
+      - ./postgres/offer_db:/var/lib/postgresql/data

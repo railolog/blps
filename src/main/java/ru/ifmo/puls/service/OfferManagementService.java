@@ -8,14 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.CreateOfferRequestTo;
 import ru.ifmo.puls.auth.model.Role;
 import ru.ifmo.puls.auth.model.User;
-import ru.ifmo.puls.domain.Offer;
-import ru.ifmo.puls.domain.OfferStatus;
+import ru.ifmo.puls.domain.offer.Offer;
+import ru.ifmo.puls.domain.offer.OfferStatus;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.exception.ForbiddenException;
 import ru.ifmo.puls.exception.NotFoundException;
-import ru.ifmo.puls.repository.OfferRepository;
+import ru.ifmo.puls.repository.offer.OfferRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class OfferManagementService {
     private final OfferRepository offerRepository;
     private final TenderQueryService tenderQueryService;
 
-    @Transactional
+    @Transactional("offerTransactionManager")
     public long createOffer(CreateOfferRequestTo request, User supplier) {
         Tender tender = tenderQueryService
                 .findById(request.getTenderId())
@@ -48,7 +48,7 @@ public class OfferManagementService {
         return savedOffer.getId();
     }
 
-    @Transactional
+    @Transactional("offerTransactionManager")
     public void deleteOffer(long userId, long offerId) {
         Offer offer = offerQueryService.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("No offer with id [" + offerId + "]"));
@@ -77,7 +77,7 @@ public class OfferManagementService {
         return offers;
     }
 
-    @Transactional
+    @Transactional("offerTransactionManager")
     public void declineOffer(long offerId, User user) {
         Offer offer = offerQueryService
                 .findById(offerId)
@@ -98,7 +98,7 @@ public class OfferManagementService {
         offerQueryService.save(offer);
     }
 
-    @Transactional
+    @Transactional("offerTransactionManager")
     public void acceptOffer(long offerId, User user) {
         Offer offer = offerQueryService
                 .findById(offerId)

@@ -15,7 +15,7 @@ import ru.blps.openapi.model.OfferResponseTo;
 import ru.blps.openapi.model.OfferShortResponseTo;
 import ru.ifmo.puls.auth.model.User;
 import ru.ifmo.puls.auth.service.UserService;
-import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.domain.offer.Offer;
 import ru.ifmo.puls.dto.ListWithTotal;
 import ru.ifmo.puls.service.OfferManagementService;
 import ru.ifmo.puls.service.OfferQueryService;

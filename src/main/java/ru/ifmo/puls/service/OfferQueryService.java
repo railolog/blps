@@ -9,9 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.LimitOffsetPageRequest;
-import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.domain.offer.Offer;
 import ru.ifmo.puls.dto.ListWithTotal;
-import ru.ifmo.puls.repository.OfferRepository;
+import ru.ifmo.puls.repository.offer.OfferRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -32,12 +32,12 @@ public class OfferQueryService {
         return new ListWithTotal<>(offers.stream().toList(), offers.getTotalElements());
     }
 
-    @Transactional
+    @Transactional("offerTransactionManager")
     public Offer save(Offer offer) {
         return offerRepository.save(offer);
     }
 
-    @Transactional
+    @Transactional("offerTransactionManager")
     public void saveAll(Iterable<Offer> offers) {
         offerRepository.saveAll(offers);
     }

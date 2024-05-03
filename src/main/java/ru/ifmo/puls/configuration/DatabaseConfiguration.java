@@ -15,9 +15,12 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import ru.ifmo.puls.auth.repo.UserRepository;
+import ru.ifmo.puls.repository.TenderRepository;
 import ru.ifmo.puls.repository.offer.OfferRepository;
 
 @Slf4j
@@ -27,7 +30,7 @@ import ru.ifmo.puls.repository.offer.OfferRepository;
         excludeFilters = {
                 @ComponentScan.Filter(
                         type = FilterType.ASSIGNABLE_TYPE,
-                        classes = OfferRepository.class
+                        classes = {OfferRepository.class, UserRepository.class, TenderRepository.class}
                 )
         },
         entityManagerFactoryRef = "primaryEntityManager",
@@ -35,7 +38,7 @@ import ru.ifmo.puls.repository.offer.OfferRepository;
 )
 @Import(FlywayConfiguration.class)
 public class DatabaseConfiguration {
-    @Bean(initMethod = "init", destroyMethod = "close")
+    @Bean(initMethod = "init", destroyMethod = "close", name = "primaryDataSource")
     @DependsOn({"flywayDelegate", "transactionManager"})
     public AtomikosDataSourceBean primaryDataSource(
             @Value("${pgaas.datasource.server}") String server,
@@ -80,5 +83,12 @@ public class DatabaseConfiguration {
         emf.setJpaProperties(additionalProperties);
 
         return emf;
+    }
+
+    @Bean("primaryTemplate")
+    public NamedParameterJdbcTemplate primaryTemplate(
+            @Qualifier("primaryDataSource") AtomikosDataSourceBean dataSource
+    ) {
+        return new NamedParameterJdbcTemplate(dataSource);
     }
 }

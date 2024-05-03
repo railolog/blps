@@ -21,7 +21,7 @@ public class UserService {
      * @return сохраненный пользователь
      */
     public User save(User user) {
-        return repository.saveAndFlush(user);
+        return repository.save(user);
     }
 
     public User update(User user) {

@@ -3,6 +3,7 @@ package ru.ifmo.puls.service;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.ifmo.puls.domain.ComplaintConv;
@@ -14,6 +15,7 @@ import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.repository.ComplaintRepository;
 import ru.ifmo.puls.repository.offer.OfferRepository;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TenderManagementService {
@@ -42,6 +44,7 @@ public class TenderManagementService {
     public void updateTender(long userId, long tenderId, CreateTenderRequestTo request) {
         Tender tender = tenderQueryService.getById(tenderId);
 
+        log.error("Tender: [{}]", tender);
         if (tender.getStatus() != TenderStatus.NEW) {
             throw ConflictException.incorrectTenderStatus(TenderStatus.NEW);
         }
@@ -50,6 +53,6 @@ public class TenderManagementService {
         tender.setDescription(request.getDescription());
         tender.setAmount(request.getAmount());
 
-        tenderQueryService.save(tender);
+        tenderQueryService.update(tender);
     }
 }

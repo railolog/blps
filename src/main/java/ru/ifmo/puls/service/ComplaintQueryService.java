@@ -35,7 +35,7 @@ public class ComplaintQueryService {
                 .build();
 
         tender.setStatus(TenderStatus.IN_DISPUTE);
-        tenderQueryService.save(tender);
+        tenderQueryService.update(tender);
 
         return complaintRepository.save(complaint);
     }

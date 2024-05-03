@@ -22,7 +22,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
         enableDefaultTransactions = false
 )
 public class OfferJpaConfiguration {
-    @Bean
+    @Bean("offerDataSource")
     @DependsOn("transactionManager")
     public AtomikosDataSourceBean offerDataSource(
             @Value("${pgaas.offer.server}") String server,

@@ -35,7 +35,7 @@ public class ComplaintManagementService {
             tender.setStatus(TenderStatus.ACCEPTED);
         }
 
-        tenderQueryService.save(tender);
+        tenderQueryService.update(tender);
     }
 
     private ComplaintResponseTo enriched(ComplaintConv conv, Tender tender) {

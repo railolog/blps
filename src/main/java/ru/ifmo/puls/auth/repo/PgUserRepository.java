@@ -93,7 +93,7 @@ public class PgUserRepository implements UserRepository {
         MapSqlParameterSource params = new MapSqlParameterSource(Map.of(
                 USERNAME, user.getUsername(),
                 PASSWORD, user.getPassword(),
-                ROLE, "user" // TODO
+                ROLE, user.getRole().name()
         ));
 
         return jdbcTemplate.queryForObject(

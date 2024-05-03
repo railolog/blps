@@ -230,7 +230,6 @@ public class PgTenderRepository implements TenderRepository {
         return new PageImpl<>(tenders, pageable, total);
     }
 
-    // TODO: update query
     @Override
     public Tender save(Tender tender) {
         MapSqlParameterSource params = new MapSqlParameterSource();

@@ -22,7 +22,7 @@ public class UserMapper implements RowMapper<User> {
                 .id(rs.getLong(ID))
                 .username(rs.getString(USERNAME))
                 .password(rs.getString(PASSWORD))
-                .role(Role.USER)            // TODO
+                .role(Role.valueOf(rs.getString(ROLE)))
                 .build();
     }
 }

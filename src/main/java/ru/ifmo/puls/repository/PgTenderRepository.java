@@ -27,7 +27,7 @@ import static ru.ifmo.puls.repository.mapper.TenderMapper.TITLE;
 import static ru.ifmo.puls.repository.mapper.TenderMapper.USER_ID;
 
 @Repository
-public class PgTenderRepository implements TenderRepository {
+public class PgTenderRepository {
 
     private static final String LIMIT = "limit";
     private static final String OFFSET = "offset";
@@ -133,7 +133,6 @@ public class PgTenderRepository implements TenderRepository {
         this.tenderMapper = tenderMapper;
     }
 
-    @Override
     public Page<Tender> findByStatus(Pageable pageable, TenderStatus status) {
         Integer total = jdbcTemplate.queryForObject(
                 SELECT_BY_STATUS_TOTAL,
@@ -154,7 +153,6 @@ public class PgTenderRepository implements TenderRepository {
         return new PageImpl<>(tenders, pageable, total);
     }
 
-    @Override
     public Page<Tender> findByUserId(Pageable pageable, long userId) {
         Integer total = jdbcTemplate.queryForObject(
                 SELECT_BY_USER_ID_TOTAL,
@@ -175,27 +173,23 @@ public class PgTenderRepository implements TenderRepository {
         return new PageImpl<>(tenders, pageable, total);
     }
 
-    @Override
     public boolean existsByIdAndUserId(long id, long userId) {
         return findByUserId(userId).stream()
                 .anyMatch(tender -> Objects.equals(id, tender.getId()));
     }
 
-    @Override
     public long countByStatusAndUserId(TenderStatus status, long userId) {
         return findByUserId(userId).stream()
                 .filter(tender -> Objects.equals(status, tender.getStatus()))
                 .count();
     }
 
-    @Override
     public long countByStatusAndSupplierId(TenderStatus status, long supplierId) {
         return findBySupplierId(supplierId).stream()
                 .filter(tender -> Objects.equals(status, tender.getStatus()))
                 .count();
     }
 
-    @Override
     public Optional<Tender> findById(long id) {
         try {
             return Optional.ofNullable(
@@ -210,7 +204,6 @@ public class PgTenderRepository implements TenderRepository {
         }
     }
 
-    @Override
     public Page<Tender> findAll(LimitOffsetPageRequest pageable) {
         Integer total = jdbcTemplate.queryForObject(
                 SELECT_BASE_TOTAL,
@@ -230,7 +223,6 @@ public class PgTenderRepository implements TenderRepository {
         return new PageImpl<>(tenders, pageable, total);
     }
 
-    @Override
     public Tender save(Tender tender) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(TITLE, tender.getTitle());
@@ -247,7 +239,6 @@ public class PgTenderRepository implements TenderRepository {
         );
     }
 
-    @Override
     public void delete(Tender tender) {
         jdbcTemplate.update(
                 DELETE_BY_ID_QUERY,
@@ -255,7 +246,6 @@ public class PgTenderRepository implements TenderRepository {
         );
     }
 
-    @Override
     public Tender update(Tender tender) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(TITLE, tender.getTitle());

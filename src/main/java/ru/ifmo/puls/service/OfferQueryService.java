@@ -9,14 +9,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.LimitOffsetPageRequest;
-import ru.ifmo.puls.offer.Offer;
 import ru.ifmo.puls.dto.ListWithTotal;
-import ru.ifmo.puls.repository.offer.OfferRepository;
+import ru.ifmo.puls.offer.Offer;
+import ru.ifmo.puls.repository.PgOfferRepository;
 
 @Service
 @RequiredArgsConstructor
 public class OfferQueryService {
-    private final OfferRepository offerRepository;
+    private final PgOfferRepository offerRepository;
 
     public Optional<Offer> findById(long id) {
         return offerRepository.findById(id);

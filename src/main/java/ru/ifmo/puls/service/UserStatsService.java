@@ -5,17 +5,17 @@ import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.blps.openapi.model.UserStatsResponseTo;
-import ru.ifmo.puls.domain.Role;
-import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.auth.service.UserService;
+import ru.ifmo.puls.domain.Role;
 import ru.ifmo.puls.domain.TenderStatus;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.exception.BadRequest;
-import ru.ifmo.puls.repository.TenderRepository;
+import ru.ifmo.puls.repository.PgTenderRepository;
 
 @Service
 @RequiredArgsConstructor
 public class UserStatsService {
-    private final TenderRepository tenderRepository;
+    private final PgTenderRepository tenderRepository;
     private final UserService userService;
 
     public UserStatsResponseTo getUserStats(long userId) {

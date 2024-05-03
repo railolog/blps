@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.ifmo.puls.domain.ComplaintConv;
-import ru.ifmo.puls.offer.Offer;
-import ru.ifmo.puls.offer.OfferStatus;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
+import ru.ifmo.puls.offer.Offer;
+import ru.ifmo.puls.offer.OfferStatus;
 import ru.ifmo.puls.repository.ComplaintRepository;
-import ru.ifmo.puls.repository.offer.OfferRepository;
+import ru.ifmo.puls.repository.PgOfferRepository;
 
 @Slf4j
 @Service
@@ -22,7 +22,7 @@ public class TenderManagementService {
     private final TenderQueryService tenderQueryService;
     private final OfferQueryService offerQueryService;
     private final ComplaintRepository complaintRepository;
-    private final OfferRepository offerRepository;
+    private final PgOfferRepository offerRepository;
 
     public void removeTender(long userId, long tenderId) {
         Tender tender = tenderQueryService.getById(tenderId);

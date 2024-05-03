@@ -11,19 +11,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.ifmo.puls.LimitOffsetPageRequest;
-import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.dto.ListWithTotal;
 import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.exception.ForbiddenException;
 import ru.ifmo.puls.exception.NotFoundException;
-import ru.ifmo.puls.repository.TenderRepository;
+import ru.ifmo.puls.repository.PgTenderRepository;
 
 @Service
 @RequiredArgsConstructor
 public class TenderQueryService {
-    private final TenderRepository tenderRepository;
+    private final PgTenderRepository tenderRepository;
 
     @Transactional
     public long createTender(CreateTenderRequestTo request, User user) {

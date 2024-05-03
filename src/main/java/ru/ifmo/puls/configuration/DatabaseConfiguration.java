@@ -19,8 +19,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import ru.ifmo.puls.repository.TenderRepository;
-import ru.ifmo.puls.repository.offer.OfferRepository;
+import ru.ifmo.puls.repository.PgTenderRepository;
 
 @Slf4j
 @Configuration
@@ -29,7 +28,7 @@ import ru.ifmo.puls.repository.offer.OfferRepository;
         excludeFilters = {
                 @ComponentScan.Filter(
                         type = FilterType.ASSIGNABLE_TYPE,
-                        classes = {OfferRepository.class, TenderRepository.class}
+                        classes = {PgTenderRepository.class}
                 )
         },
         entityManagerFactoryRef = "primaryEntityManager",

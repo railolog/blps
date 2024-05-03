@@ -14,7 +14,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.ifmo.puls.offer.Offer;
 import ru.ifmo.puls.repository.mapper.OfferMapper;
-import ru.ifmo.puls.repository.offer.OfferRepository;
 
 import static ru.ifmo.puls.repository.mapper.OfferMapper.DESCRIPTION;
 import static ru.ifmo.puls.repository.mapper.OfferMapper.ID;
@@ -24,7 +23,7 @@ import static ru.ifmo.puls.repository.mapper.OfferMapper.SUPPLIER_ID;
 import static ru.ifmo.puls.repository.mapper.OfferMapper.TENDER_ID;
 
 @Repository
-public class PgOfferRepository implements OfferRepository {
+public class PgOfferRepository {
 
     private static final String LIMIT = "limit";
     private static final String OFFSET = "offset";
@@ -97,7 +96,6 @@ public class PgOfferRepository implements OfferRepository {
         this.offerMapper = offerMapper;
     }
 
-    @Override
     public List<Offer> findByTenderId(long id) {
         return jdbcTemplate.query(
                 SELECT_BY_TENDER_ID_QUERY,
@@ -106,7 +104,6 @@ public class PgOfferRepository implements OfferRepository {
         );
     }
 
-    @Override
     public Optional<Offer> findById(long id) {
         try {
             return Optional.ofNullable(
@@ -121,7 +118,6 @@ public class PgOfferRepository implements OfferRepository {
         }
     }
 
-    @Override
     public Page<Offer> findBySupplierId(Pageable pageable, long id) {
         Integer total = jdbcTemplate.queryForObject(
                 SELECT_BY_SUPPLIER_ID_TOTAL,
@@ -142,7 +138,6 @@ public class PgOfferRepository implements OfferRepository {
         return new PageImpl<>(offers, pageable, total);
     }
 
-    @Override
     public void delete(Offer offer) {
         jdbcTemplate.update(
                 DELETE_BY_ID_QUERY,
@@ -150,7 +145,6 @@ public class PgOfferRepository implements OfferRepository {
         );
     }
 
-    @Override
     public Offer save(Offer offer) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(DESCRIPTION, offer.getDescription());
@@ -166,7 +160,6 @@ public class PgOfferRepository implements OfferRepository {
         );
     }
 
-    @Override
     public void saveAllByTenderId(List<Offer> offers) {
         MapSqlParameterSource[] params = offers.stream()
                 .map(
@@ -182,7 +175,6 @@ public class PgOfferRepository implements OfferRepository {
         );
     }
 
-    @Override
     public Offer update(Offer offer) {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue(ID, offer.getId())
@@ -195,7 +187,6 @@ public class PgOfferRepository implements OfferRepository {
         );
     }
 
-    @Override
     public void deleteAll(List<Offer> offers) {
         MapSqlParameterSource[] params = offers.stream()
                 .map(

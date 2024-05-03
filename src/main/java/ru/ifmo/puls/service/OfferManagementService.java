@@ -7,21 +7,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.CreateOfferRequestTo;
 import ru.ifmo.puls.domain.Role;
-import ru.ifmo.puls.domain.User;
-import ru.ifmo.puls.offer.Offer;
-import ru.ifmo.puls.offer.OfferStatus;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.exception.ForbiddenException;
 import ru.ifmo.puls.exception.NotFoundException;
-import ru.ifmo.puls.repository.offer.OfferRepository;
+import ru.ifmo.puls.offer.Offer;
+import ru.ifmo.puls.offer.OfferStatus;
+import ru.ifmo.puls.repository.PgOfferRepository;
 
 @Service
 @RequiredArgsConstructor
 public class OfferManagementService {
     private final OfferQueryService offerQueryService;
-    private final OfferRepository offerRepository;
+    private final PgOfferRepository offerRepository;
     private final TenderQueryService tenderQueryService;
 
     @Transactional

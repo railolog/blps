@@ -25,6 +25,23 @@ public class OfferManagementService {
     private final PgOfferRepository offerRepository;
     private final TenderQueryService tenderQueryService;
 
+    public List<Offer> findByTenderId(long tenderId, User user) {
+        if (user.getRole() == Role.USER) {
+            if (!tenderQueryService.isUsersTender(user.getId(), tenderId)) {
+                throw new ForbiddenException("Tender doesn't belong to the user");
+            }
+        }
+
+        List<Offer> offers = offerQueryService.findByTenderId(tenderId);
+        if (user.getRole() == Role.SUPPLIER) {
+            return offers.stream()
+                    .filter(offer -> offer.getSupplierId().equals(user.getId()))
+                    .toList();
+        }
+
+        return offers;
+    }
+
     @Transactional
     public long createOffer(CreateOfferRequestTo request, User supplier) {
         Tender tender = tenderQueryService
@@ -63,23 +80,6 @@ public class OfferManagementService {
         }
 
         offerRepository.delete(offer);
-    }
-
-    public List<Offer> findByTenderId(long tenderId, User user) {
-        if (user.getRole() == Role.USER) {
-            if (!tenderQueryService.isUsersTender(user.getId(), tenderId)) {
-                throw new ForbiddenException("Tender doesn't belong to the user");
-            }
-        }
-
-        List<Offer> offers = offerQueryService.findByTenderId(tenderId);
-        if (user.getRole() == Role.SUPPLIER) {
-            return offers.stream()
-                    .filter(offer -> offer.getSupplierId().equals(user.getId()))
-                    .toList();
-        }
-
-        return offers;
     }
 
     @Transactional

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.domain.Offer;
 import ru.ifmo.puls.repository.mapper.OfferMapper;
 
@@ -138,6 +139,7 @@ public class PgOfferRepository {
         return new PageImpl<>(offers, pageable, total);
     }
 
+    @Transactional
     public void delete(Offer offer) {
         jdbcTemplate.update(
                 DELETE_BY_ID_QUERY,
@@ -145,6 +147,7 @@ public class PgOfferRepository {
         );
     }
 
+    @Transactional
     public Offer save(Offer offer) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(DESCRIPTION, offer.getDescription());
@@ -160,6 +163,7 @@ public class PgOfferRepository {
         );
     }
 
+    @Transactional
     public void saveAllByTenderId(List<Offer> offers) {
         MapSqlParameterSource[] params = offers.stream()
                 .map(
@@ -175,6 +179,7 @@ public class PgOfferRepository {
         );
     }
 
+    @Transactional
     public Offer update(Offer offer) {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue(ID, offer.getId())
@@ -187,6 +192,7 @@ public class PgOfferRepository {
         );
     }
 
+    @Transactional
     public void deleteAll(List<Offer> offers) {
         MapSqlParameterSource[] params = offers.stream()
                 .map(

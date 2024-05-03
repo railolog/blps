@@ -9,6 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.domain.ComplaintConv;
 import ru.ifmo.puls.repository.mapper.ComplaintMapper;
 
@@ -66,18 +67,6 @@ public class PgComplaintRepository {
         );
     }
 
-    public ComplaintConv save(ComplaintConv complaint) {
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue(MESSAGE, complaint.getMessage())
-                .addValue(TENDER_ID, complaint.getTenderId());
-
-        return jdbcTemplate.queryForObject(
-                INSERT_WITH_RETURNING,
-                params,
-                complaintMapper
-        );
-    }
-
     public Optional<ComplaintConv> findById(long id) {
         try {
             return Optional.ofNullable(
@@ -92,6 +81,20 @@ public class PgComplaintRepository {
         }
     }
 
+    @Transactional
+    public ComplaintConv save(ComplaintConv complaint) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue(MESSAGE, complaint.getMessage())
+                .addValue(TENDER_ID, complaint.getTenderId());
+
+        return jdbcTemplate.queryForObject(
+                INSERT_WITH_RETURNING,
+                params,
+                complaintMapper
+        );
+    }
+
+    @Transactional
     public void deleteAll(List<ComplaintConv> complaints) {
         MapSqlParameterSource[] params = complaints.stream()
                 .map(complaint -> new MapSqlParameterSource(ID, complaint.getId()))

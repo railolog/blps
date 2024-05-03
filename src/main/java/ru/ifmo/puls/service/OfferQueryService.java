@@ -37,6 +37,7 @@ public class OfferQueryService {
         return offerRepository.save(offer);
     }
 
+    @Transactional
     public Offer update(Offer offer) {
         return offerRepository.update(offer);
     }

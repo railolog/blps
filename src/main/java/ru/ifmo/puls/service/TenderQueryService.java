@@ -25,6 +25,42 @@ import ru.ifmo.puls.repository.PgTenderRepository;
 public class TenderQueryService {
     private final PgTenderRepository tenderRepository;
 
+    public boolean isUsersTender(long userId, long tenderId) {
+        return tenderRepository.existsByIdAndUserId(tenderId, userId);
+    }
+
+    public List<Tender> findAll(int limit, int offset) {
+        return tenderRepository
+                .findAll(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()))
+                .toList();
+    }
+
+    public Optional<Tender> findById(long id) {
+        return tenderRepository.findById(id);
+    }
+
+    public Tender getById(long id) {
+        return tenderRepository.findById(id).orElseThrow(() -> NotFoundException.fromTender(id));
+    }
+
+    public ListWithTotal<Tender> findAllNew(int limit, int offset) {
+        Page<Tender> tenders = tenderRepository
+                .findByStatus(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), TenderStatus.NEW);
+        return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
+    }
+
+    public ListWithTotal<Tender> findByUserId(int limit, int offset, long userId) {
+        Page<Tender> tenders = tenderRepository
+                .findByUserId(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), userId);
+        return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
+    }
+
+    public ListWithTotal<Tender> findByStatus(int limit, int offset, TenderStatus status) {
+        Page<Tender> tenders = tenderRepository
+                .findByStatus(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), status);
+        return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
+    }
+
     @Transactional
     public long createTender(CreateTenderRequestTo request, User user) {
         Tender tender = Tender.builder()
@@ -69,42 +105,6 @@ public class TenderQueryService {
 
         tender.setStatus(TenderStatus.ACCEPTED);
         tenderRepository.update(tender);
-    }
-
-    public boolean isUsersTender(long userId, long tenderId) {
-        return tenderRepository.existsByIdAndUserId(tenderId, userId);
-    }
-
-    public List<Tender> findAll(int limit, int offset) {
-        return tenderRepository
-                .findAll(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()))
-                .toList();
-    }
-
-    public Optional<Tender> findById(long id) {
-        return tenderRepository.findById(id);
-    }
-
-    public Tender getById(long id) {
-        return tenderRepository.findById(id).orElseThrow(() -> NotFoundException.fromTender(id));
-    }
-
-    public ListWithTotal<Tender> findAllNew(int limit, int offset) {
-        Page<Tender> tenders = tenderRepository
-                .findByStatus(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), TenderStatus.NEW);
-        return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
-    }
-
-    public ListWithTotal<Tender> findByUserId(int limit, int offset, long userId) {
-        Page<Tender> tenders = tenderRepository
-                .findByUserId(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), userId);
-        return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
-    }
-
-    public ListWithTotal<Tender> findByStatus(int limit, int offset, TenderStatus status) {
-        Page<Tender> tenders = tenderRepository
-                .findByStatus(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), status);
-        return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
     }
 
     @Transactional

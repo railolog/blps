@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.LimitOffsetPageRequest;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
@@ -223,6 +224,7 @@ public class PgTenderRepository {
         return new PageImpl<>(tenders, pageable, total);
     }
 
+    @Transactional
     public Tender save(Tender tender) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(TITLE, tender.getTitle());
@@ -239,6 +241,7 @@ public class PgTenderRepository {
         );
     }
 
+    @Transactional
     public void delete(Tender tender) {
         jdbcTemplate.update(
                 DELETE_BY_ID_QUERY,
@@ -246,6 +249,7 @@ public class PgTenderRepository {
         );
     }
 
+    @Transactional
     public Tender update(Tender tender) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(TITLE, tender.getTitle());

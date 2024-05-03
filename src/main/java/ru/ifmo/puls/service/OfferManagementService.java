@@ -95,7 +95,7 @@ public class OfferManagementService {
         }
 
         offer.setStatus(OfferStatus.DECLINED);
-        offerQueryService.save(offer);
+        offerQueryService.update(offer);
     }
 
     @Transactional
@@ -121,7 +121,7 @@ public class OfferManagementService {
         }
 
         tenderOffers.forEach(offer1 -> acceptOneDeclineAll(offer1, offerId));
-        offerQueryService.saveAll(tenderOffers);
+        offerQueryService.saveAllByTenderId(tenderOffers);
 
         tender.setStatus(TenderStatus.IN_PROGRESS);
         tender.setSupplierId(offer.getSupplierId());

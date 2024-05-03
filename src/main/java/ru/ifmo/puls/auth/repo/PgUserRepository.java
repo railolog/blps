@@ -16,7 +16,7 @@ import static ru.ifmo.puls.auth.repo.UserMapper.ROLE;
 import static ru.ifmo.puls.auth.repo.UserMapper.USERNAME;
 
 @Repository
-public class PgUserRepository implements UserRepository {
+public class PgUserRepository {
     private static final String SELECT_BASE_QUERY
             = " SELECT *"
             + " FROM users";
@@ -32,7 +32,7 @@ public class PgUserRepository implements UserRepository {
     private static final String INSERT_WITH_RETURNING
             = " INSERT INTO users("
             + " " + USERNAME + ", "
-            + " " +  PASSWORD + ", "
+            + " " + PASSWORD + ", "
             + " " + ROLE
             + " )"
             + " VALUES ("
@@ -53,7 +53,6 @@ public class PgUserRepository implements UserRepository {
         this.userMapper = userMapper;
     }
 
-    @Override
     public Optional<User> findByUsername(String username) {
         try {
             return Optional.ofNullable(
@@ -68,12 +67,10 @@ public class PgUserRepository implements UserRepository {
         }
     }
 
-    @Override
     public boolean existsByUsername(String username) {
         return findByUsername(username).isPresent();
     }
 
-    @Override
     public Optional<User> findById(long id) {
         try {
             return Optional.ofNullable(
@@ -88,7 +85,6 @@ public class PgUserRepository implements UserRepository {
         }
     }
 
-    @Override
     public User save(User user) {
         MapSqlParameterSource params = new MapSqlParameterSource(Map.of(
                 USERNAME, user.getUsername(),

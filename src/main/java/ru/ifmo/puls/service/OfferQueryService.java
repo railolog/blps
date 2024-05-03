@@ -37,8 +37,12 @@ public class OfferQueryService {
         return offerRepository.save(offer);
     }
 
+    public Offer update(Offer offer) {
+        return offerRepository.update(offer);
+    }
+
     @Transactional
-    public void saveAll(Iterable<Offer> offers) {
-        offerRepository.saveAll(offers);
+    public void saveAllByTenderId(List<Offer> offers) {
+        offerRepository.saveAllByTenderId(offers);
     }
 }

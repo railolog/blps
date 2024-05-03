@@ -6,14 +6,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ifmo.puls.auth.repo.UserRepository;
+import ru.ifmo.puls.auth.repo.PgUserRepository;
 import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.exception.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository repository;
+    private final PgUserRepository repository;
 
     /**
      * Сохранение пользователя

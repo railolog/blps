@@ -1,17 +1,19 @@
 package ru.ifmo.puls.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.ifmo.puls.domain.ComplaintConv;
+import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.domain.OfferStatus;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
-import ru.ifmo.puls.domain.Offer;
-import ru.ifmo.puls.domain.OfferStatus;
+import ru.ifmo.puls.exception.ForbiddenException;
 import ru.ifmo.puls.repository.PgComplaintRepository;
 import ru.ifmo.puls.repository.PgOfferRepository;
 
@@ -44,7 +46,9 @@ public class TenderManagementService {
     public void updateTender(long userId, long tenderId, CreateTenderRequestTo request) {
         Tender tender = tenderQueryService.getById(tenderId);
 
-        log.error("Tender: [{}]", tender);
+        if (!Objects.equals(userId, tender.getUserId())) {
+            throw ForbiddenException.fromUserId(userId);
+        }
         if (tender.getStatus() != TenderStatus.NEW) {
             throw ConflictException.incorrectTenderStatus(TenderStatus.NEW);
         }

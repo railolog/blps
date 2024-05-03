@@ -1,5 +1,7 @@
 package ru.ifmo.puls.service;
 
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,5 +44,9 @@ public class ComplaintQueryService {
 
     public ComplaintConv getById(long id) {
         return complaintRepository.findById(id).orElseThrow(() -> NotFoundException.fromComplaint(id));
+    }
+
+    public Optional<ComplaintConv> getByTenderId(long id) {
+        return complaintRepository.findByTenderId(id).stream().findFirst();
     }
 }

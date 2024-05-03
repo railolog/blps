@@ -3,9 +3,7 @@ package ru.ifmo.puls.presentation.controller;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import ru.blps.openapi.api.OfferApi;
 import ru.blps.openapi.model.CreateOfferRequestTo;
@@ -13,23 +11,35 @@ import ru.blps.openapi.model.CreateOfferResponseTo;
 import ru.blps.openapi.model.OfferListResponseTo;
 import ru.blps.openapi.model.OfferResponseTo;
 import ru.blps.openapi.model.OfferShortResponseTo;
-import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.auth.service.UserService;
 import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.domain.Role;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.dto.ListWithTotal;
 import ru.ifmo.puls.service.OfferManagementService;
 import ru.ifmo.puls.service.OfferQueryService;
 
 @RestController
-@RequiredArgsConstructor
-public class OfferController implements OfferApi {
+public class OfferController extends BaseController implements OfferApi {
     private final OfferManagementService offerManagementService;
     private final OfferQueryService offerQueryService;
     private final UserService userService;
 
+    public OfferController(
+            OfferManagementService offerManagementService,
+            OfferQueryService offerQueryService,
+            UserService userService
+    ) {
+        super(userService);
+        this.offerManagementService = offerManagementService;
+        this.offerQueryService = offerQueryService;
+        this.userService = userService;
+    }
+
     @Override
-    @Secured("SUPPLIER")
     public ResponseEntity<CreateOfferResponseTo> createOffer(CreateOfferRequestTo createOfferRequestTo) {
+        hasRole(Role.SUPPLIER);
+
         long id = offerManagementService.createOffer(createOfferRequestTo, userService.getCurrentUser());
         return ResponseEntity.ok(
                 new CreateOfferResponseTo().id(id)
@@ -45,6 +55,7 @@ public class OfferController implements OfferApi {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Secured on service layer
     @Override
     public ResponseEntity<OfferListResponseTo> getOffersByTenderId(Long id) {
         return ResponseEntity.ok(
@@ -54,14 +65,17 @@ public class OfferController implements OfferApi {
 
     @Override
     public ResponseEntity<Void> deleteOffer(Long id) {
+        hasRole(Role.SUPPLIER);
+
         User user = userService.getCurrentUser();
         offerManagementService.deleteOffer(user.getId(), id);
         return ResponseEntity.ok().build();
     }
 
     @Override
-    @Secured("SUPPLIER")
     public ResponseEntity<OfferListResponseTo> getSupplierOffers(Integer limit, Integer offset) {
+        hasRole(Role.SUPPLIER);
+
         return ResponseEntity.ok(
                 transform(
                         offerQueryService.findBySupplierId(limit, offset, userService.getCurrentUser().getId())
@@ -71,12 +85,16 @@ public class OfferController implements OfferApi {
 
     @Override
     public ResponseEntity<Void> declineOffer(Long id) {
+        hasRole(Role.USER);
+
         offerManagementService.declineOffer(id, userService.getCurrentUser());
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<Void> acceptOffer(Long id) {
+        hasRole(Role.USER);
+
         offerManagementService.acceptOffer(id, userService.getCurrentUser());
         return ResponseEntity.ok().build();
     }

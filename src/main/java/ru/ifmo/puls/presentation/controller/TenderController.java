@@ -1,8 +1,6 @@
 package ru.ifmo.puls.presentation.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import ru.blps.openapi.api.TenderApi;
 import ru.blps.openapi.model.CreateTenderRequestTo;
@@ -10,21 +8,32 @@ import ru.blps.openapi.model.CreateTenderResponseTo;
 import ru.blps.openapi.model.TenderListResponseTo;
 import ru.blps.openapi.model.TenderResponseTo;
 import ru.blps.openapi.model.TenderShortResponseTo;
-import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.auth.service.UserService;
+import ru.ifmo.puls.domain.Role;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.dto.ListWithTotal;
 import ru.ifmo.puls.exception.BadRequest;
 import ru.ifmo.puls.service.TenderManagementService;
 import ru.ifmo.puls.service.TenderQueryService;
 
 @RestController
-@RequiredArgsConstructor
-public class TenderController implements TenderApi {
+public class TenderController extends BaseController implements TenderApi {
     private final TenderQueryService tenderQueryService;
     private final TenderManagementService tenderManagementService;
     private final UserService userService;
+
+    public TenderController(
+            TenderQueryService tenderQueryService,
+            TenderManagementService tenderManagementService,
+            UserService userService
+    ) {
+        super(userService);
+        this.tenderQueryService = tenderQueryService;
+        this.tenderManagementService = tenderManagementService;
+        this.userService = userService;
+    }
 
     @Override
     public ResponseEntity<TenderListResponseTo> getTenders(Integer limit, Integer offset) {
@@ -49,8 +58,9 @@ public class TenderController implements TenderApi {
     }
 
     @Override
-    @Secured("USER")
     public ResponseEntity<TenderListResponseTo> getMyTenders(Integer limit, Integer offset) {
+        hasRole(Role.USER);
+
         User user = userService.getCurrentUser();
         ListWithTotal<Tender> tenders = tenderQueryService.findByUserId(limit, offset, user.getId());
         return ResponseEntity.ok(
@@ -59,8 +69,9 @@ public class TenderController implements TenderApi {
     }
 
     @Override
-    @Secured("USER")
     public ResponseEntity<CreateTenderResponseTo> createTender(CreateTenderRequestTo createTenderRequestTo) {
+        hasRole(Role.USER);
+
         User user = userService.getCurrentUser();
 
         return ResponseEntity.ok(
@@ -70,7 +81,6 @@ public class TenderController implements TenderApi {
     }
 
     @Override
-    @Secured("SUPPLIER")
     public ResponseEntity<Void> finishTender(Long tenderId) {
         User user = userService.getCurrentUser();
         tenderQueryService.markFinished(user.getId(), tenderId);
@@ -78,7 +88,6 @@ public class TenderController implements TenderApi {
     }
 
     @Override
-    @Secured("USER")
     public ResponseEntity<Void> acceptCompletion(Long tenderId) {
         User user = userService.getCurrentUser();
         tenderQueryService.acceptCompletion(user.getId(), tenderId);

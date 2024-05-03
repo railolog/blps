@@ -10,6 +10,7 @@ import ru.ifmo.puls.domain.Resolution;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.BadRequest;
+import ru.ifmo.puls.exception.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,14 @@ public class ComplaintManagementService {
 
     public ComplaintResponseTo getById(long id) {
         ComplaintConv complaintConv = complaintQueryService.getById(id);
+        Tender tender = tenderQueryService.getById(complaintConv.getTenderId());
+
+        return enriched(complaintConv, tender);
+    }
+
+    public ComplaintResponseTo getByTenderId(long id) {
+        ComplaintConv complaintConv = complaintQueryService.getByTenderId(id)
+                .orElseThrow(() -> new NotFoundException("No complaints found by tender_id: " + id));
         Tender tender = tenderQueryService.getById(complaintConv.getTenderId());
 
         return enriched(complaintConv, tender);

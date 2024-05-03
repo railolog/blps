@@ -1,6 +1,7 @@
 package ru.ifmo.puls.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,10 @@ public class OfferManagementService {
     public void deleteOffer(long userId, long offerId) {
         Offer offer = offerQueryService.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("No offer with id [" + offerId + "]"));
+
+        if (!Objects.equals(userId, offer.getSupplierId())) {
+            throw new ForbiddenException("User isn't the author of offer");
+        }
 
         if (offer.getStatus() != OfferStatus.NEW) {
             throw new ConflictException("Offer must be new");

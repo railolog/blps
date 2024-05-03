@@ -6,10 +6,8 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.ifmo.puls.DaoTools;
-import ru.ifmo.puls.domain.Tender;
-import ru.ifmo.puls.domain.TenderStatus;
-import ru.ifmo.puls.offer.Offer;
-import ru.ifmo.puls.offer.OfferStatus;
+import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.domain.OfferStatus;
 
 @Component
 public class OfferMapper implements RowMapper<Offer> {

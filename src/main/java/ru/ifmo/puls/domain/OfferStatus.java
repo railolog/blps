@@ -1,4 +1,4 @@
-package ru.ifmo.puls.offer;
+package ru.ifmo.puls.domain;
 
 public enum OfferStatus {
     NEW,

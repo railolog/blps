@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.ifmo.puls.offer.Offer;
+import ru.ifmo.puls.domain.Offer;
 import ru.ifmo.puls.repository.mapper.OfferMapper;
 
 import static ru.ifmo.puls.repository.mapper.OfferMapper.DESCRIPTION;

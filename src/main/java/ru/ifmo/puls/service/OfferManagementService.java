@@ -13,8 +13,8 @@ import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.exception.ForbiddenException;
 import ru.ifmo.puls.exception.NotFoundException;
-import ru.ifmo.puls.offer.Offer;
-import ru.ifmo.puls.offer.OfferStatus;
+import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.domain.OfferStatus;
 import ru.ifmo.puls.repository.PgOfferRepository;
 
 @Service

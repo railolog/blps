@@ -10,8 +10,8 @@ import ru.ifmo.puls.domain.ComplaintConv;
 import ru.ifmo.puls.domain.Tender;
 import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
-import ru.ifmo.puls.offer.Offer;
-import ru.ifmo.puls.offer.OfferStatus;
+import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.domain.OfferStatus;
 import ru.ifmo.puls.repository.PgComplaintRepository;
 import ru.ifmo.puls.repository.PgOfferRepository;
 

@@ -25,7 +25,7 @@ import ru.ifmo.puls.repository.TenderRepository;
 public class TenderQueryService {
     private final TenderRepository tenderRepository;
 
-    @Transactional
+    @Transactional(transactionManager = "myTransactionManager")
     public long createTender(CreateTenderRequestTo request, User user) {
         Tender tender = Tender.builder()
                 .title(request.getTitle())
@@ -35,11 +35,11 @@ public class TenderQueryService {
                 .userId(user.getId())
                 .build();
 
-        Tender savedTender = tenderRepository.save(tender);
+        Tender savedTender = tenderRepository.saveAndFlush(tender);
         return savedTender.getId();
     }
 
-    @Transactional
+    @Transactional("myTransactionManager")
     public void markFinished(long supplierId, long tenderId) {
         Tender tender = tenderRepository.findById(tenderId).orElseThrow(() -> NotFoundException.fromTender(tenderId));
 
@@ -55,7 +55,7 @@ public class TenderQueryService {
         tenderRepository.save(tender);
     }
 
-    @Transactional
+    @Transactional("myTransactionManager")
     public void acceptCompletion(long userId, long tenderId) {
         Tender tender = tenderRepository.findById(tenderId).orElseThrow(() -> NotFoundException.fromTender(tenderId));
 
@@ -107,12 +107,12 @@ public class TenderQueryService {
         return new ListWithTotal<>(tenders.stream().toList(), tenders.getTotalElements());
     }
 
-    @Transactional
+    @Transactional("myTransactionManager")
     public void delete(Tender tender) {
         tenderRepository.delete(tender);
     }
 
-    @Transactional
+    @Transactional("myTransactionManager")
     public Tender save(Tender tender) {
         return tenderRepository.save(tender);
     }

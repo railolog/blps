@@ -6,10 +6,15 @@ services:
       - "8080:8080"
     environment:
       PGAAS_DATASOURCE_URL: jdbc:postgresql://db:5432/main
+      PGAAS_DATASOURCE_SERVER: db
+      PGAAS_DATASOURCE_PORT: 5432
+      PGAAS_DATASOURCE_DB: main
       PGAAS_DATASOURCE_USERNAME: user
       PGAAS_DATASOURCE_PASSWORD: pass
 
-      SECONDARY_DB_URL: jdbc:postgresql://offer_db:5432/secondary
+      SECONDARY_DB_SERVER: offer_db
+      SECONDARY_DB_PORT: 5432
+      SECONDARY_DB: secondary
       SECONDARY_DB_USER: user
       SECONDARY_DB_PASS: pass
 

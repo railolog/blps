@@ -5,8 +5,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.ifmo.puls.domain.User;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.auth.repo.UserRepository;
+import ru.ifmo.puls.domain.User;
 import ru.ifmo.puls.exception.NotFoundException;
 
 @Service
@@ -20,7 +21,7 @@ public class UserService {
      * @return сохраненный пользователь
      */
     public User save(User user) {
-        return repository.save(user);
+        return repository.saveAndFlush(user);
     }
 
     public User update(User user) {
@@ -33,6 +34,7 @@ public class UserService {
      *
      * @return созданный пользователь
      */
+    @Transactional(rollbackFor = Exception.class)
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
             // Заменить на свои исключения

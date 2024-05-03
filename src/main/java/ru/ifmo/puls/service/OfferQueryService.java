@@ -32,12 +32,12 @@ public class OfferQueryService {
         return new ListWithTotal<>(offers.stream().toList(), offers.getTotalElements());
     }
 
-    @Transactional("offerTransactionManager")
+    @Transactional
     public Offer save(Offer offer) {
         return offerRepository.save(offer);
     }
 
-    @Transactional("offerTransactionManager")
+    @Transactional
     public void saveAll(Iterable<Offer> offers) {
         offerRepository.saveAll(offers);
     }

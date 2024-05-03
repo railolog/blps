@@ -24,7 +24,7 @@ public class OfferManagementService {
     private final OfferRepository offerRepository;
     private final TenderQueryService tenderQueryService;
 
-    @Transactional("offerTransactionManager")
+    @Transactional("myTransactionManager")
     public long createOffer(CreateOfferRequestTo request, User supplier) {
         Tender tender = tenderQueryService
                 .findById(request.getTenderId())
@@ -48,7 +48,7 @@ public class OfferManagementService {
         return savedOffer.getId();
     }
 
-    @Transactional("offerTransactionManager")
+    @Transactional("myTransactionManager")
     public void deleteOffer(long userId, long offerId) {
         Offer offer = offerQueryService.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("No offer with id [" + offerId + "]"));
@@ -77,7 +77,7 @@ public class OfferManagementService {
         return offers;
     }
 
-    @Transactional("offerTransactionManager")
+    @Transactional("myTransactionManager")
     public void declineOffer(long offerId, User user) {
         Offer offer = offerQueryService
                 .findById(offerId)
@@ -98,7 +98,7 @@ public class OfferManagementService {
         offerQueryService.save(offer);
     }
 
-    @Transactional("offerTransactionManager")
+    @Transactional("myTransactionManager")
     public void acceptOffer(long offerId, User user) {
         Offer offer = offerQueryService
                 .findById(offerId)

@@ -2,7 +2,7 @@ package ru.ifmo.puls.configuration;
 
 import java.util.Properties;
 
-import com.atomikos.spring.AtomikosDataSourceBean;
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,14 +31,16 @@ import ru.ifmo.puls.repository.offer.OfferRepository;
                 )
         },
         entityManagerFactoryRef = "primaryEntityManager",
-        transactionManagerRef = "transactionManager"
+        enableDefaultTransactions = false
 )
 @Import(FlywayConfiguration.class)
 public class DatabaseConfiguration {
     @Bean(initMethod = "init", destroyMethod = "close")
-    @DependsOn("flywayDelegate")
+    @DependsOn({"flywayDelegate", "transactionManager"})
     public AtomikosDataSourceBean primaryDataSource(
-            @Value("${pgaas.datasource.url}") String jdbcUrl,
+            @Value("${pgaas.datasource.server}") String server,
+            @Value("${pgaas.datasource.port}") String port,
+            @Value("${pgaas.datasource.db}") String db,
             @Value("${pgaas.datasource.username}") String username,
             @Value("${pgaas.datasource.password}") String password,
             @Value("${atomikos.datasource.driver-class-name}") String driverName
@@ -48,9 +50,9 @@ public class DatabaseConfiguration {
 
         dataSource.setXaDataSourceClassName(driverName);
 
-        dataSource.getXaProperties().setProperty("serverName", "db");
-        dataSource.getXaProperties().setProperty("portNumber", "5432");
-        dataSource.getXaProperties().setProperty("databaseName", "main");
+        dataSource.getXaProperties().setProperty("serverName", server);
+        dataSource.getXaProperties().setProperty("portNumber", port);
+        dataSource.getXaProperties().setProperty("databaseName", db);
         dataSource.getXaProperties().setProperty("user", username);
         dataSource.getXaProperties().setProperty("password", password);
 
@@ -69,7 +71,6 @@ public class DatabaseConfiguration {
         emf.setJpaVendorAdapter(vendorAdapter);
 
         Properties additionalProperties = new Properties();
-        additionalProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         additionalProperties.put("hibernate.show_sql", "true");
         additionalProperties.put("hibernate.hbm2ddl.auto", "validate");
         additionalProperties.put("hibernate.physical_naming_strategy",

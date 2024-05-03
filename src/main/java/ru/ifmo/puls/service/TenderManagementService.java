@@ -12,7 +12,7 @@ import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.offer.Offer;
 import ru.ifmo.puls.offer.OfferStatus;
-import ru.ifmo.puls.repository.ComplaintRepository;
+import ru.ifmo.puls.repository.PgComplaintRepository;
 import ru.ifmo.puls.repository.PgOfferRepository;
 
 @Slf4j
@@ -21,7 +21,7 @@ import ru.ifmo.puls.repository.PgOfferRepository;
 public class TenderManagementService {
     private final TenderQueryService tenderQueryService;
     private final OfferQueryService offerQueryService;
-    private final ComplaintRepository complaintRepository;
+    private final PgComplaintRepository complaintRepository;
     private final PgOfferRepository offerRepository;
 
     public void removeTender(long userId, long tenderId) {

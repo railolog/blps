@@ -27,7 +27,7 @@ public class ComplaintManagementService {
     @Transactional
     public void resolve(ResolutionRequestTo request) {
         ComplaintConv complaint = complaintQueryService.getById(request.getComplaintId());
-        Tender tender = tenderQueryService.getById(complaint.getId());
+        Tender tender = tenderQueryService.getById(complaint.getTenderId());
 
         if (request.getResolution() == ResolutionRequestTo.ResolutionEnum.ACCEPTED) {
             tender.setStatus(TenderStatus.NOT_ACCEPTED);

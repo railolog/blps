@@ -9,12 +9,12 @@ import ru.ifmo.puls.domain.TenderStatus;
 import ru.ifmo.puls.exception.ConflictException;
 import ru.ifmo.puls.exception.ForbiddenException;
 import ru.ifmo.puls.exception.NotFoundException;
-import ru.ifmo.puls.repository.ComplaintRepository;
+import ru.ifmo.puls.repository.PgComplaintRepository;
 
 @Service
 @RequiredArgsConstructor
 public class ComplaintQueryService {
-    private final ComplaintRepository complaintRepository;
+    private final PgComplaintRepository complaintRepository;
     private final TenderQueryService tenderQueryService;
 
     @Transactional

@@ -19,12 +19,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    /**
-     * Регистрация пользователя
-     *
-     * @param request данные пользователя
-     * @return токен
-     */
     public JwtResponseTo signUp(SignUpRequestTo request) {
 
         User user = User.builder()
@@ -39,12 +33,6 @@ public class AuthenticationService {
         return new JwtResponseTo().token(jwt);
     }
 
-    /**
-     * Аутентификация пользователя
-     *
-     * @param request данные пользователя
-     * @return токен
-     */
     public JwtResponseTo signIn(SignInRequestTo request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),

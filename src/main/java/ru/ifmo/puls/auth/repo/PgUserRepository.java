@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.domain.User;
 
 import static ru.ifmo.puls.auth.repo.UserMapper.ID;
@@ -85,6 +86,7 @@ public class PgUserRepository {
         }
     }
 
+    @Transactional
     public User save(User user) {
         MapSqlParameterSource params = new MapSqlParameterSource(Map.of(
                 USERNAME, user.getUsername(),

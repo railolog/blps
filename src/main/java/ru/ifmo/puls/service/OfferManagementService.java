@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.CreateOfferRequestTo;
 import ru.ifmo.puls.domain.Role;
@@ -42,7 +43,7 @@ public class OfferManagementService {
         return offers;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public long createOffer(CreateOfferRequestTo request, User supplier) {
         Tender tender = tenderQueryService
                 .findById(request.getTenderId())
@@ -103,7 +104,7 @@ public class OfferManagementService {
         offerQueryService.update(offer);
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void acceptOffer(long offerId, User user) {
         Offer offer = offerQueryService
                 .findById(offerId)

@@ -6,6 +6,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.blps.openapi.model.CreateTenderRequestTo;
 import ru.ifmo.puls.domain.ComplaintConv;
@@ -27,7 +28,7 @@ public class TenderManagementService {
     private final PgComplaintRepository complaintRepository;
     private final PgOfferRepository offerRepository;
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void removeTender(long userId, long tenderId) {
         Tender tender = tenderQueryService.getById(tenderId);
         List<Offer> offers = offerQueryService.findByTenderId(tenderId);

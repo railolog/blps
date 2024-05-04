@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 @Configuration
-@EnableTransactionManagement(proxyTargetClass = true, order = Integer.MIN_VALUE)
+@EnableTransactionManagement(order = Integer.MIN_VALUE)
 @Order(Integer.MIN_VALUE)
 public class AtomikosTmConfiguration {
     @Bean(initMethod = "init", destroyMethod = "close")
@@ -37,6 +37,7 @@ public class AtomikosTmConfiguration {
         JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
         jtaTransactionManager.setTransactionManager(userTransactionManager());
         jtaTransactionManager.setUserTransaction(userTransactionManager());
+        jtaTransactionManager.setAllowCustomIsolationLevels(true);
         return jtaTransactionManager;
     }
 }

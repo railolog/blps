@@ -28,7 +28,7 @@ public class TenderManagementService {
     private final PgComplaintRepository complaintRepository;
     private final PgOfferRepository offerRepository;
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void removeTender(long userId, long tenderId) {
         Tender tender = tenderQueryService.getById(tenderId);
         List<Offer> offers = offerQueryService.findByTenderId(tenderId);

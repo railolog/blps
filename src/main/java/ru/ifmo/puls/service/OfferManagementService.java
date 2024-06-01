@@ -104,7 +104,7 @@ public class OfferManagementService {
         offerQueryService.update(offer);
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void acceptOffer(long offerId, User user) {
         Offer offer = offerQueryService
                 .findById(offerId)

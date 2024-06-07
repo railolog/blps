@@ -58,6 +58,10 @@ public class PgTenderRepository {
             = SELECT_BASE_QUERY
             + " WHERE " + ID + " = :" + ID;
 
+    private static final String SELECT_BY_IDS_QUERY
+            = SELECT_BASE_QUERY
+            + " WHERE " + ID + " IN (:" + ID + ")";
+
     private static final String SELECT_BY_USER_ID_LIMIT_QUERY
             = SELECT_BASE_QUERY
             + " WHERE " + USER_ID + " = :" + USER_ID
@@ -152,6 +156,14 @@ public class PgTenderRepository {
         );
 
         return new PageImpl<>(tenders, pageable, total);
+    }
+
+    public List<Tender> findByIds(List<Long> ids) {
+        return jdbcTemplate.query(
+                SELECT_BY_IDS_QUERY,
+                Map.of(ID, ids),
+                tenderMapper
+        );
     }
 
     public Page<Tender> findByUserId(Pageable pageable, long userId) {

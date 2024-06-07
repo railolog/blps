@@ -26,6 +26,10 @@ public class OfferQueryService {
         return offerRepository.findByTenderId(tenderId);
     }
 
+    public List<Long> getIgnoredTenderIds() {
+        return offerRepository.findIgnoredTenderIds();
+    }
+
     public ListWithTotal<Offer> findBySupplierId(int limit, int offset, long supplierId) {
         Page<Offer> offers = offerRepository
                 .findBySupplierId(LimitOffsetPageRequest.of(limit, offset, Sort.by("id").ascending()), supplierId);

@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ifmo.puls.domain.Offer;
+import ru.ifmo.puls.domain.OfferStatus;
 import ru.ifmo.puls.repository.mapper.OfferMapper;
 
 import static ru.ifmo.puls.repository.mapper.OfferMapper.DESCRIPTION;
@@ -59,6 +60,11 @@ public class PgOfferRepository {
             + " FROM offer"
             + " WHERE " + SUPPLIER_ID + " = :" + SUPPLIER_ID;
 
+    private static final String SELECT_TENDER_IDS_BY_STATUS
+            = " SELECT DISTINCT(" + TENDER_ID + ")"
+            + " FROM offer"
+            + " WHERE " + STATUS + " = :" + STATUS;
+
     private static final String INSERT_WITH_RETURNING
             = " INSERT INTO offer("
             + " " + DESCRIPTION + ", "
@@ -102,6 +108,14 @@ public class PgOfferRepository {
                 SELECT_BY_TENDER_ID_QUERY,
                 Map.of(TENDER_ID, id),
                 offerMapper
+        );
+    }
+
+    public List<Long> findIgnoredTenderIds() {
+        return jdbcTemplate.queryForList(
+                SELECT_TENDER_IDS_BY_STATUS,
+                Map.of(STATUS, OfferStatus.NEW.name()),
+                Long.class
         );
     }
 

@@ -380,3 +380,65 @@ paths:
             application/json:
               schema:
                 $ref: 'schemas.yaml#/components/schemas/UserStatsResponseTo'
+
+
+
+  /notifications:
+    get:
+      operationId: getMyNotifications
+      tags: [ notification ]
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            description: The number of items to return at one time (max 100)
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas.yaml#/components/schemas/NotificationListResponseTo'
+
+  /notifications/{id}:
+    get:
+      operationId: getMyNotification
+      tags: [ notification ]
+      parameters:
+        - $ref: 'parameters.yaml#/components/parameters/idPathParam'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas.yaml#/components/schemas/NotificationResponseTo'
+
+  /notifications/amount:
+    get:
+      operationId: getMyNotificationsAmount
+      tags: [ notification ]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas.yaml#/components/schemas/NotificationAmountResponseTo'
+
+  /notifications/mark-viewed:
+    post:
+      operationId: markAllViewed
+      tags: [ notification ]
+      responses:
+        200:
+          description: OK

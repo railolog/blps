@@ -35,6 +35,10 @@ public class TenderQueryService {
                 .toList();
     }
 
+    public List<Tender> findByIds(List<Long> ids) {
+        return tenderRepository.findByIds(ids);
+    }
+
     public Optional<Tender> findById(long id) {
         return tenderRepository.findById(id);
     }

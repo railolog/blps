@@ -25,6 +25,7 @@ public class OfferManagementService {
     private final OfferQueryService offerQueryService;
     private final PgOfferRepository offerRepository;
     private final TenderQueryService tenderQueryService;
+    private final NotificationService notificationService;
 
     public List<Offer> findByTenderId(long tenderId, User user) {
         if (user.getRole() == Role.USER) {
@@ -64,6 +65,8 @@ public class OfferManagementService {
                 .build();
 
         Offer savedOffer = offerQueryService.save(offer);
+        notificationService.sendOfferNotification(tender, supplier.getUsername());
+
         return savedOffer.getId();
     }
 
@@ -102,6 +105,7 @@ public class OfferManagementService {
 
         offer.setStatus(OfferStatus.DECLINED);
         offerQueryService.update(offer);
+        notificationService.declineOfferNotification(offer.getSupplierId(), tender);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -128,6 +132,7 @@ public class OfferManagementService {
 
         tenderOffers.forEach(offer1 -> acceptOneDeclineAll(offer1, offerId));
         offerQueryService.saveAllByTenderId(tenderOffers);
+        tenderOffers.forEach(offer1 -> sendStatusNotification(offer1, tender));
 
         tender.setStatus(TenderStatus.IN_PROGRESS);
         tender.setSupplierId(offer.getSupplierId());
@@ -139,6 +144,14 @@ public class OfferManagementService {
             offer.setStatus(OfferStatus.ACCEPTED);
         } else {
             offer.setStatus(OfferStatus.DECLINED);
+        }
+    }
+
+    private void sendStatusNotification(Offer offer, Tender tender) {
+        if (offer.getStatus().equals(OfferStatus.ACCEPTED)) {
+            notificationService.acceptOfferNotification(offer.getSupplierId(), tender);
+        } else {
+            notificationService.declineOfferNotification(offer.getSupplierId(), tender);
         }
     }
 }

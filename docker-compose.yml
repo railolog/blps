@@ -18,12 +18,22 @@ services:
       SECONDARY_DB_USER: user
       SECONDARY_DB_PASS: pass
 
+      NOTIFICATION_DB_URL: jdbc:postgresql://notification_db:5432/notification
+      NOTIFICATION_DB_USERNAME: user
+      NOTIFICATION_DB_PASSWORD: pass
+
+      KAFKA_URL: kafka:9092
+      KAFKA_GROUP_ID:
+
       JWT_TOKEN: railolograilolograilolograilolograilolograilolog
       SERVER_PORT: 8080
-    restart: on-failure
     depends_on:
-      - db
-      - offer_db
+      db:
+        condition: service_healthy
+      offer_db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
 
   db:
     image: postgres:16
@@ -32,6 +42,11 @@ services:
       POSTGRES_DB: main
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U user -d main'"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
     ports:
       - "5432:5432"
     volumes:
@@ -44,7 +59,50 @@ services:
       POSTGRES_DB: secondary
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U user -d secondary'" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
     ports:
       - "5433:5432"
     volumes:
       - ./postgres/offer_db:/var/lib/postgresql/data
+
+  notification_db:
+    image: postgres:16
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: notification
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U user -d notification'" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./postgres/notification:/var/lib/postgresql/data
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "29092:29092"
